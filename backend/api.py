@@ -176,6 +176,30 @@ def retrieve_all():
     retrieve_euro(page_size=1)
     retrieve_ieee("molecule inhibitor dna", max_records=1)
 
+def gpt_output(user_input):
+    client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+    completion = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": """You are a researcher explaining research papers based on questions asked to you"""},
+            {"role": "user", "content": f"""Answer the following question in a few sentences: {user_input}
+            """}
+        ]
+    )
+    output = (completion.choices[0].message.content)
+    return output
+
+def chat():
+    print("Welcome to the OpenAI Chatbot. Type 'quit' to exit.")
+    while True:
+        user_input = input("You: ")
+        if user_input.lower() == "quit":
+            break
+        response = gpt_output(user_input)
+        print(f"Chatbot: {response}")
+
+
+
 # Main script to retrieve articles from different sources
 if __name__ == "__main__":
     retrieve_all()
