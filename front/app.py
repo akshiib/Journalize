@@ -21,7 +21,7 @@ def load_user(user_id):
 
 @app.route('/')
 def hello_world():
-    return "Hello World!"
+    return render_template('home.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -62,6 +62,16 @@ def register():
 def logout():
     logout_user()
     return redirect(url_for('hello_world'))
+
+@app.route('/search')
+def search():
+    return render_template('search.html')
+
+@app.route('/search_results')
+def search_results():
+    query = request.args.get('query')
+    # Add search logic here
+    return render_template('search_results.html', query=query)
 
 if __name__ == '__main__':
     app.run()

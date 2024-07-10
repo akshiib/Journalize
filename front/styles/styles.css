@@ -1,0 +1,80 @@
+/* Reset some default styles */
+body, h1, h2, h3, h4, h5, h6, p, ul, li, a {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f5f5f5;
+}
+
+/* Header and Navigation */
+header {
+    background-color: transparent; /* Remove default background color */
+}
+
+.navbar {
+    background-color: #000000; /* Custom color for navbar */
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+}
+
+.navbar-brand img {
+    margin-right: 0.5rem; /* Space between logo and text */
+}
+
+/* Ensure navbar links are white with high specificity */
+.navbar .navbar-nav .nav-link {
+    color: #ffffff !important; /* Use !important to force override */
+}
+
+.navbar .navbar-nav .nav-link:hover {
+    color: #cccccc !important; /
+}
+
+/* Custom styling for nav-item */
+.navbar-nav .nav-item {
+    margin-left: 1rem; /* Space between nav items */
+}
+
+/* Footer */
+footer {
+    background-color: #000000; /* Custom color for footer */
+    color: #ffffff;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+}
+
+.footer-links li {
+    display: inline;
+    margin: 0 1rem;
+}
+
+.footer-links a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+.footer-links a:hover {
+    text-decoration: underline;
+}
+
+/* General Layout */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
+{% endblock %}
+
+{% block content %}
+    <div class="search-container">
+        <h1><strong>Search for Research Papers</strong></h1>
+        <form class="search-form" action="{{ url_for('search_results') }}" method="GET">
+            <input type="text" name="query" class="search-input" placeholder="Enter your research question or keywords">
+            <button type="submit" class="search-button">Search</button>
+        </form>
+    </div>
+{% endblock %}
