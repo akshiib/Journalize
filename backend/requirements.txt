@@ -1,0 +1,8 @@
+textrazor 
+meaningcloud-python 
+requests 
+xmltodict
+dotenv
+feedparser
+openai
+pymongo
