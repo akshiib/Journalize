@@ -2,8 +2,8 @@
 
 /* Hero Section */
 .hero {
-    display: flex;
-    align-items: center;
+    display: flex; /* Use flexbox for layout */
+    align-items: center; /* Center items vertically */
     background-color: #f5f5f5; /* Background color for hero section */
     color: #000000; /* Text color */
     padding: 0; /* Remove default padding */
@@ -11,31 +11,31 @@
 }
 
 .hero-content {
-    display: flex;
-    width: 100%;
+    display: flex; /* Use flexbox for layout */
+    width: 100%; /* Full width of the container */
 }
 
 .hero-image {
-    flex: 0 0 55%; /* Image takes 40% of the width */
+    flex: 0 0 55%; /* Image takes 55% of the width */
     background: #f5f5f5; /* Fallback background color */
     overflow: hidden; /* Hide overflow to maintain rounded corners */
 }
 
 .hero-image img {
-    width: 100%;
-    height: auto;
+    width: 100%; /* Make image cover the full width */
+    height: auto; /* Maintain aspect ratio */
     max-height: 600px; /* Control the maximum height of the image */
     object-fit: cover; /* Ensure the image covers the area while maintaining aspect ratio */
     border-bottom-right-radius: 250px; /* Increase rounding of the bottom right corner */
-    display: block; /* Remove any extra space below image */
+    display: block; /* Remove any extra space below the image */
 }
 
 .hero-text {
     flex: 1; /* Text takes the remaining space */
     padding: 2rem; /* Padding around the text content */
     max-width: 60%; /* Ensure text content does not exceed 60% of the width */
-    display: flex;
-    flex-direction: column;
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Align text vertically */
     justify-content: center; /* Center text vertically */
     text-align: left; /* Align text to the left */
 }
@@ -44,23 +44,23 @@
     font-size: 3rem; /* Increase font size */
     font-weight: bold; /* Make text bold */
     color: #334195; /* Purple color */
-    margin-bottom: 1rem;
+    margin-bottom: 1rem; /* Space below the heading */
     line-height: 1.2; /* Adjust line height for better readability */
     word-wrap: break-word; /* Allow text to wrap to the next line if needed */
 }
 
 .hero-text p {
-    font-size: 1.2rem;
-    margin-bottom: 2rem;
+    font-size: 1.2rem; /* Increase font size for paragraph */
+    margin-bottom: 2rem; /* Space below the paragraph */
 }
 
 .cta-button {
     background-color: #334195; /* Custom color for button */
-    color: #ffffff;
+    color: #ffffff; /* Text color */
     padding: 0.5rem 1.5rem; /* Adjust padding to wrap around content */
-    text-decoration: none;
-    font-size: 1.2rem;
-    border-radius: 5px;
+    text-decoration: none; /* Remove underline from the link */
+    font-size: 1.2rem; /* Font size for button text */
+    border-radius: 5px; /* Round the corners of the button */
     display: inline-block; /* Ensure button only takes up as much space as its content */
     align-self: flex-start; /* Align the button to the start of the flex container */
 }
@@ -71,7 +71,7 @@
 
 /* Features Section */
 .features {
-    padding: 2rem 1rem;
+    padding: 2rem 1rem; /* Padding around the features section */
 }
 
 .features .container {
@@ -80,19 +80,19 @@
 
 .feature-item {
     background-color: #ffffff; /* Background color for feature items */
-    border: 1px solid #cccccc;
-    border-radius: 5px;
-    padding: 1.5rem; /* Increased padding for better spacing */
-    text-align: center;
+    border: 1px solid #cccccc; /* Border color */
+    border-radius: 5px; /* Round the corners */
+    padding: 1.5rem; /* Padding inside the feature item */
+    text-align: center; /* Center text inside feature item */
     height: 100%; /* Ensure the feature items take up the full height of the column */
 }
 
 .feature-item h2 {
-    font-size: 1.5rem; /* Adjust as needed */
-    margin-bottom: 1rem;
+    font-size: 1.5rem; /* Font size for feature item headings */
+    margin-bottom: 1rem; /* Space below the heading */
 }
 
 .feature-item p {
-    font-size: 1rem; /* Adjust as needed */
+    font-size: 1rem; /* Font size for paragraph text */
     color: #666666; /* Subtle text color */
 }

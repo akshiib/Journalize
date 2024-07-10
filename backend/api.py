@@ -195,10 +195,54 @@ def insert_to_mongodb(article_data):
     except Exception as e:
         print(f"Error inserting article to MongoDB: {e}")
 
-def retrieve_all():
-    retrieve_cornell(max_results=2)
-    retrieve_euro(page_size=2)
-    retrieve_ieee(max_records=2)
+# Define a function to retrieve articles based on given keywords
+def retrieve_all(keywords):
+    global KEYWORDS  # Make the KEYWORDS variable global to be accessible outside this function
+    KEYWORDS = keywords 
+
+    # Initialize an empty list to store articles
+    articles = []
+
+    # Function to collect articles from different sources
+    def collect_articles(func, *args, **kwargs):
+        nonlocal articles  # Access the 'articles' variable defined in the outer function
+        func(*args, **kwargs)  # Call the provided function with arguments and keyword arguments
+        # Ensure the 'process_article' function collects results into the 'articles' list
+        # The 'process_article' function should be defined elsewhere in your code to append results
+
+    # Collect articles from different sources with specified parameters
+    collect_articles(retrieve_cornell, max_results=2)  # Retrieve 2 articles from Cornell
+    collect_articles(retrieve_euro, page_size=2)      # Retrieve 2 articles from Euro
+    collect_articles(retrieve_ieee, max_records=2)    # Retrieve 2 articles from IEEE
+
+    return articles  # Return the list of collected articles
+
+# Define a function to format raw article results
+def format_results(raw_results):
+    formatted_results = []  # Initialize an empty list to store formatted results
+
+    # Loop through each raw result
+    for result in raw_results:
+        formatted_result = {
+            'title': result.get('title', 'No title available'),  # Get the title or default if not present
+            'source': result.get('source', 'Unknown source'),    # Get the source or default if not present
+            'url': result.get('url', '#'),                       # Get the URL or default if not present
+            'summary': result.get('summary', 'No summary available'),  # Get the summary or default if not present
+            'content': result.get('content', 'No content available'),  # Get the content or default if not present
+            'topics': []  # Initialize an empty list for topics
+        }
+
+        # Get topics from the result, default to an empty dictionary if not present
+        topics = result.get('topics', {})
+        for i in range(1, 3):  # Iterate to get up to two topics
+            topic_key = f'topic_{i}'  # Construct the topic key (e.g., 'topic_1', 'topic_2')
+            if topic_key in topics:  # Check if the topic exists in the result
+                formatted_result['topics'].append(topics[topic_key])  # Add the topic to the list
+
+        formatted_results.append(formatted_result)  # Add the formatted result to the list
+
+    return formatted_results  # Return the list of formatted results
+
 
 def gpt_output(user_input):
     client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
@@ -225,5 +269,5 @@ def chat():
 
 # Main script to retrieve articles from different sources
 if __name__ == "__main__":
-    retrieve_all()
+    #retrieve_all()
 

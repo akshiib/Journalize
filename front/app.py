@@ -1,10 +1,11 @@
-from flask import Flask, render_template, flash, redirect, url_for, request
+from flask import Flask, render_template, flash, redirect, url_for, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
 from werkzeug.security import generate_password_hash, check_password_hash
 from forms import RegistrationForm, LoginForm
 from models import User
 from db import db
+from api import retrieve_all, format_results, gpt_output
 import os
 
 app = Flask(__name__, static_folder='styles')
@@ -19,8 +20,9 @@ login_manager.login_view = 'login'
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+# Route for the home page
 @app.route('/')
-def hello_world():
+def home():
     return render_template('home.html')
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -63,15 +65,24 @@ def logout():
     logout_user()
     return redirect(url_for('hello_world'))
 
-@app.route('/search')
+# Route for search functionality
+@app.route('/search', methods=['GET', 'POST'])
 def search():
-    return render_template('search.html')
+    if request.method == 'POST':
+        query = request.form['query']  # Get the search query from the form
+        raw_results = retrieve_all(query)  # Get raw results from API
+        results = format_results(raw_results)  # Format the results
+        return render_template('search_results.html', query=query, results=results)
+    return render_template('search.html')  # Render the search page template
 
-@app.route('/search_results')
-def search_results():
-    query = request.args.get('query')
-    # Add search logic here
-    return render_template('search_results.html', query=query)
+@app.route('/chat', methods=['POST'])
+def chat():
+    data = request.get_json()  # Get the JSON data from the request
+    user_message = data.get('message')  # Extract the user's message
+    bot_response = gpt_output(user_message)  # Get the chatbot's response
+    return jsonify({"response": bot_response})  # Return the response as JSON
+
+
 
 if __name__ == '__main__':
     app.run()

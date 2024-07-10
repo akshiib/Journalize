@@ -1,15 +1,19 @@
 {% extends "base.html" %}
 
 {% block head %}
+    <!-- Link to the CSS file specific to the home page -->
     <link rel="stylesheet" href="{{ url_for('styles', filename='home.css') }}">
 {% endblock %}
 
 {% block content %}
+    <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
+            <!-- Hero Image -->
             <div class="hero-image">
                 <img src="{{ url_for('styles', filename='intro-image.jpg') }}" alt="Hero Image">
             </div>
+            <!-- Hero Text with Heading, Paragraph, and Call to Action Button -->
             <div class="hero-text">
                 <h1>Empower Your Learning with Journalize</h1>
                 <p>Explore tools and resources tailored to simplify your research needs.</p>
@@ -18,25 +22,29 @@
         </div>
     </section>
 
+    <!-- Features Section -->
     <section class="features">
         <div class="container">
             <div class="row">
+                <!-- Feature Item 1: Account Management -->
                 <div class="col-md-4">
                     <div class="feature-item">
                         <h2>Account Management</h2>
-                        <p>Allows you to login, use our features and save your work.</p>
+                        <p>Allows you to login, use our features, and save your work.</p>
                     </div>
                 </div>
+                <!-- Feature Item 2: Search Papers -->
                 <div class="col-md-4">
                     <div class="feature-item">
                         <h2>Search Papers</h2>
-                        <p>Searches through various databses to return a list of relevant papers.</p>
+                        <p>Searches through various databases to return a list of relevant papers.</p>
                     </div>
                 </div>
+                <!-- Feature Item 3: Summarizes Papers -->
                 <div class="col-md-4">
                     <div class="feature-item">
                         <h2>Summarizes Papers</h2>
-                        <p>Displays a brief summary of each paper to help you decide what papers to use.</p>
+                        <p>Displays a brief summary of each paper to help you decide which papers to use.</p>
                     </div>
                 </div>
             </div>

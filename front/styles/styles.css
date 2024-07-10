@@ -1,80 +1,173 @@
-/* Reset some default styles */
+/* Reset some default styles to ensure consistency across browsers */
 body, h1, h2, h3, h4, h5, h6, p, ul, li, a {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    box-sizing: border-box; /* Ensure padding and border are included in element's total width and height */
 }
 
 /* Global Styles */
 body {
-    font-family: Arial, sans-serif;
-    line-height: 1.6;
-    color: #333;
-    background-color: #f5f5f5;
+    font-family: Arial, sans-serif; /* Set default font */
+    line-height: 1.6; /* Improve readability with line spacing */
+    color: #333; /* Set text color */
+    background-color: #f5f5f5; /* Set background color */
 }
 
 /* Header and Navigation */
 header {
-    background-color: transparent; /* Remove default background color */
+    background-color: transparent; /* Remove default background color for the header */
 }
 
 .navbar {
-    background-color: #000000; /* Custom color for navbar */
+    background-color: #000000; /* Set custom background color for the navbar */
 }
 
 .navbar-brand {
-    display: flex;
-    align-items: center;
+    display: flex; /* Align logo and text horizontally */
+    align-items: center; /* Vertically center logo and text */
 }
 
 .navbar-brand img {
-    margin-right: 0.5rem; /* Space between logo and text */
+    margin-right: 0.5rem; /* Add space between logo image and text */
 }
 
 /* Ensure navbar links are white with high specificity */
 .navbar .navbar-nav .nav-link {
-    color: #ffffff !important; /* Use !important to force override */
+    color: #ffffff !important; /* Force white color for navbar links */
 }
 
 .navbar .navbar-nav .nav-link:hover {
-    color: #cccccc !important; /
+    color: #cccccc !important; /* Change link color on hover */
 }
 
 /* Custom styling for nav-item */
 .navbar-nav .nav-item {
-    margin-left: 1rem; /* Space between nav items */
+    margin-left: 1rem; /* Add space between navigation items */
 }
 
 /* Footer */
 footer {
-    background-color: #000000; /* Custom color for footer */
-    color: #ffffff;
+    background-color: #000000; /* Set custom background color for the footer */
+    color: #ffffff; /* Set text color in footer */
 }
 
 .footer-links {
-    list-style: none;
-    padding: 0;
+    list-style: none; /* Remove bullet points from footer links */
+    padding: 0; /* Remove default padding */
 }
 
 .footer-links li {
-    display: inline;
-    margin: 0 1rem;
+    display: inline; /* Display footer links in a line */
+    margin: 0 1rem; /* Add space between links */
 }
 
 .footer-links a {
-    color: #ffffff;
-    text-decoration: none;
+    color: #ffffff; /* Set link color */
+    text-decoration: none; /* Remove underline from links */
 }
 
 .footer-links a:hover {
-    text-decoration: underline;
+    text-decoration: underline; /* Add underline on hover */
 }
 
 /* General Layout */
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 1rem;
+    max-width: 1200px; /* Set maximum width for the container */
+    margin: 0 auto; /* Center container horizontally */
+    padding: 0 1rem; /* Add horizontal padding */
 }
 
+/* Floating Chatbot Button */
+.chatbot-button {
+    position: fixed; /* Fix position at the bottom right of the viewport */
+    bottom: 20px;
+    right: 20px;
+    background-color: #334195; /* Custom background color */
+    color: white; /* Set button text color */
+    border-radius: 50%; /* Make button circular */
+    width: 50px; /* Set button width */
+    height: 50px; /* Set button height */
+    display: flex; /* Center content inside button */
+    align-items: center;
+    justify-content: center;
+    cursor: pointer; /* Change cursor to pointer on hover */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add shadow for visual depth */
+}
 
+/* Chatbot Modal */
+.chatbot-modal {
+    display: none; /* Hide modal by default */
+    position: fixed; /* Fix position at the bottom right of the viewport */
+    bottom: 20px;
+    right: 20px;
+    width: 300px; /* Set modal width */
+    background: white; /* Set background color */
+    border-radius: 8px; /* Round corners of modal */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Add shadow for visual depth */
+    overflow: hidden; /* Hide overflow content */
+    z-index: 1000; /* Ensure modal is above other content */
+}
+
+.chatbot-header {
+    background-color: #334195; /* Set header background color */
+    color: white; /* Set header text color */
+    padding: 10px; /* Add padding */
+    display: flex; /* Align header content horizontally */
+    justify-content: space-between; /* Space out header content */
+    align-items: center; /* Vertically center header content */
+}
+
+.chatbot-body {
+    padding: 10px; /* Add padding */
+    display: flex; /* Arrange content vertically */
+    flex-direction: column; /* Stack content vertically */
+    height: 300px; /* Set fixed height */
+}
+
+.chatlog {
+    flex: 1; /* Allow chatlog to grow and fill available space */
+    overflow-y: auto; /* Enable vertical scrolling */
+    border: 1px solid #ddd; /* Add border */
+    margin-bottom: 10px; /* Add space below chatlog */
+    padding: 5px; /* Add padding inside chatlog */
+}
+
+.chatlog .message {
+    margin-bottom: 10px; /* Add space between messages */
+}
+
+.chatlog .user {
+    font-weight: bold; /* Make user messages bold */
+}
+
+.chatlog .bot {
+    color: #334195; /* Set color for bot messages */
+}
+
+input#user-input {
+    width: calc(100% - 80px); /* Set width to fill available space minus button width */
+    padding: 5px; /* Add padding inside input */
+    border: 1px solid #ddd; /* Add border */
+    border-radius: 5px; /* Round corners */
+}
+
+.send-button {
+    background-color: #334195; /* Set button background color */
+    color: white; /* Set button text color */
+    border: none; /* Remove border */
+    padding: 5px 10px; /* Add padding */
+    border-radius: 5px; /* Round corners */
+    cursor: pointer; /* Change cursor to pointer on hover */
+}
+
+.send-button:hover {
+    background-color: #334195; /* Darker shade on hover */
+}
+
+.close-button {
+    background: none; /* Remove background */
+    border: none; /* Remove border */
+    color: white; /* Set text color */
+    font-size: 1.5rem; /* Set font size */
+    cursor: pointer; /* Change cursor to pointer on hover */
+}
