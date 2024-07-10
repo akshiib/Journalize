@@ -1,14 +1,14 @@
 {% extends "base.html" %}
 
 {% block head %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('styles', filename='home.css') }}">
 {% endblock %}
 
 {% block content %}
     <section class="hero">
         <div class="hero-content">
             <div class="hero-image">
-                <img src="{{ url_for('static', filename='intro-image.jpg') }}" alt="Hero Image">
+                <img src="{{ url_for('styles', filename='intro-image.jpg') }}" alt="Hero Image">
             </div>
             <div class="hero-text">
                 <h1>Empower Your Learning with Journalize</h1>
