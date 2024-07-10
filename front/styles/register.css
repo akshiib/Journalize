@@ -1,0 +1,40 @@
+.register-container {
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 700px;
+}
+
+.form-control {
+  margin-bottom: 10px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.btn-outline-info {
+  color: white;
+  border-color: white;
+}
+
+.btn {
+  border-radius: 20px;
+  background-color: #7b3d9f;
+  color: white;
+  width: 200px;
+  height: 50px;
+}
+
+.btn:hover {
+  color: #7b3d9f;
+  background-color: white;
+  border-color: #7b3d9f;
+}
+
+.invalid-feedback {
+  color: red;
+}
