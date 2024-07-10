@@ -41,7 +41,7 @@ def user_input():
     result = '%20'.join(seen)
     return result
 
-KEYWORDS = user_input()
+KEYWORDS = ""
 
 # Function to retrieve articles from Cornell Arxiv
 def retrieve_cornell(max_results=2):
@@ -268,6 +268,6 @@ def chat():
 
 
 # Main script to retrieve articles from different sources
-if __name__ == "__main__":
-    #retrieve_all()
+# if __name__ == "__main__":
+#     #retrieve_all()
 

@@ -5,8 +5,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from forms import RegistrationForm, LoginForm
 from models import User
 from db import db
-from api import retrieve_all, format_results, gpt_output
+import sys
 import os
+# Add the backend directory to the system path
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'backend')))
+from api import retrieve_all, format_results, gpt_output
 
 app = Flask(__name__, static_folder='styles')
 app.config['SECRET_KEY'] = os.urandom(24)
@@ -85,4 +88,4 @@ def chat():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True, host="0.0.0.0")

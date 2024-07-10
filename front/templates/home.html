@@ -2,7 +2,7 @@
 
 {% block head %}
     <!-- Link to the CSS file specific to the home page -->
-    <link rel="stylesheet" href="{{ url_for('styles', filename='home.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
 {% endblock %}
 
 {% block content %}
@@ -11,7 +11,7 @@
         <div class="hero-content">
             <!-- Hero Image -->
             <div class="hero-image">
-                <img src="{{ url_for('styles', filename='intro-image.jpg') }}" alt="Hero Image">
+                <img src="{{ url_for('static', filename='intro-image.jpg') }}" alt="Hero Image">
             </div>
             <!-- Hero Text with Heading, Paragraph, and Call to Action Button -->
             <div class="hero-text">
