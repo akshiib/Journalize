@@ -171,8 +171,11 @@ def insert_to_mongodb(article_data):
     except Exception as e:
         print(f"Error inserting article to MongoDB: {e}")
 
-# Main script to retrieve articles from different sources
-if __name__ == "__main__":
+def retrieve_all():
     retrieve_cornell(max_results=1)
     retrieve_euro(page_size=1)
     retrieve_ieee("molecule inhibitor dna", max_records=1)
+
+# Main script to retrieve articles from different sources
+if __name__ == "__main__":
+    retrieve_all()
