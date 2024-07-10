@@ -6,6 +6,7 @@ import json
 from dotenv import load_dotenv
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
+import textrazor
 
 # Load environment variables from .env file
 load_dotenv()
@@ -13,6 +14,7 @@ load_dotenv()
 # Set up OpenAI API key from environment variable
 openai.api_key = os.getenv('OPENAI_API_KEY')
 ieee_api_key = os.getenv('IEEE_API_KEY')
+textrazor.api_key = os.getenv('TEXTRAZOR_API_KEY')
 
 # Set up MongoDB connection
 mongodb_uri = os.getenv('MONGODB_URI')
@@ -20,10 +22,31 @@ client = MongoClient(mongodb_uri, server_api=ServerApi('1'))
 db = client["research_database"]
 collection = db["articles"]
 
+def user_input():
+    user_inp = input("Enter your research question")
+    keywords = ""
+    client = textrazor.TextRazor(extractors=["entities"])
+    response = client.analyze(user_inp)
+    
+    for entity in response.entities():
+        keywords+=f"{(entity.english_id)} "
+    
+    words = keywords.split()
+    seen = set()
+    for word in words:
+        word_l = word.lower()
+        seen.add(word_l)
+    
+    # Join the unique words with commas
+    result = '%20'.join(seen)
+    return result
+
+KEYWORDS = user_input()
+
 # Function to retrieve articles from Cornell Arxiv
-def retrieve_cornell(max_results=50):
+def retrieve_cornell(max_results=2):
     # Construct the URL for querying Arxiv
-    url_cornell = f"http://export.arxiv.org/api/query?search_query=all:molecule&max_results={max_results}"
+    url_cornell = f"http://export.arxiv.org/api/query?search_query=all:{KEYWORDS}&max_results={max_results}"
     response_cornell = requests.get(url_cornell)
     
     # Check if the request was successful
@@ -42,13 +65,14 @@ def retrieve_cornell(max_results=50):
                 "title": entry.get('title', 'No title available'),
                 "content": entry.get('summary', 'No summary available')
             }
+            print(article_data)
             process_article(article_data)
 
 # Function to retrieve articles from Europe PMC
 def retrieve_euro(page_size=50):
     url_euro = "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
     params = {
-        "query": "molecule inhibitor dna",
+        "query": KEYWORDS,
         "format": "json",
         "pageSize": page_size
     }
@@ -83,7 +107,7 @@ def retrieve_euro(page_size=50):
             process_article(article_data)
 
 # Function to retrieve articles from IEEE Xplore
-def retrieve_ieee(query, max_records=50):
+def retrieve_ieee(max_records=50):
     url = "http://ieeexploreapi.ieee.org/api/v1/search/articles"
     params = {
         "apikey": ieee_api_key,
@@ -92,7 +116,7 @@ def retrieve_ieee(query, max_records=50):
         "start_record": 1,
         "sort_order": "asc",
         "sort_field": "article_number",
-        "querytext": query
+        "querytext": KEYWORDS
     }
     
     response = requests.get(url, params=params)
@@ -172,9 +196,9 @@ def insert_to_mongodb(article_data):
         print(f"Error inserting article to MongoDB: {e}")
 
 def retrieve_all():
-    retrieve_cornell(max_results=1)
-    retrieve_euro(page_size=1)
-    retrieve_ieee("molecule inhibitor dna", max_records=1)
+    retrieve_cornell(max_results=2)
+    retrieve_euro(page_size=2)
+    retrieve_ieee(max_records=2)
 
 def gpt_output(user_input):
     client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
@@ -199,7 +223,7 @@ def chat():
         print(f"Chatbot: {response}")
 
 
-
 # Main script to retrieve articles from different sources
 if __name__ == "__main__":
     retrieve_all()
+
