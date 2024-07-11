@@ -17,13 +17,7 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='styles.css') }}"
     />
-    
-    <!-- Bootstrap CSS for responsive design and styling -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    
-    <!-- Link to custom CSS for additional styling -->
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    
+
     <!-- Block for additional head content from other templates -->
     {% block head %}{% endblock %}
   </head>
@@ -73,58 +67,30 @@
       </nav>
     </header>
 
+    <!-- Main content area where dynamic content is inserted -->
     <main>{% block content %}{% endblock %}</main>
 
-<body>
-    <!-- Header section with navigation bar -->
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark">
-            <div class="container">
-                <!-- Navbar brand with logo -->
-                <a class="navbar-brand" href="#">
-                    <!-- Logo image linked from the styles folder -->
-                    <img src="{{ url_for('static', filename='logo.png') }}" alt="Journalize Logo" class="d-inline-block align-text-top" style="height: 40px;"> Journalize 
-                </a>
-                <!-- Navbar toggle button for mobile view -->
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <!-- Navigation links -->
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('home') }}">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{{ url_for('login') }}">Login</a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <!-- Main content area where dynamic content is inserted -->
-    <main> {% block content %}{% endblock %} </main>
-
-
     <!-- Floating chatbot button positioned at the bottom right -->
-    <div id="chatbot-button" class="chatbot-button"> 💬 </div>
+    <div id="chatbot-button" class="chatbot-button">💬</div>
 
     <!-- Chatbot modal dialog -->
     <div id="chatbot-modal" class="chatbot-modal">
-        <div class="chatbot-header">
-            <h2>Chat with Us</h2>
-            <!-- Button to close the chatbot modal -->
-            <button id="close-chatbot" class="close-button">&times;</button>
-        </div>
-        <div id="chatbot-body" class="chatbot-body">
-            <!-- Container for chat messages -->
-            <div id="chatlog" class="chatlog"></div>
-            <!-- User input field and send button -->
-            <input id="user-input" type="text" placeholder="Type your question...">
-            <button id="send-message" class="send-button">Send</button>
-        </div>
+      <div class="chatbot-header">
+        <h2>Chat with Us</h2>
+        <!-- Button to close the chatbot modal -->
+        <button id="close-chatbot" class="close-button">&times;</button>
+      </div>
+      <div id="chatbot-body" class="chatbot-body">
+        <!-- Container for chat messages -->
+        <div id="chatlog" class="chatlog"></div>
+        <!-- User input field and send button -->
+        <input
+          id="user-input"
+          type="text"
+          placeholder="Type your question..."
+        />
+        <button id="send-message" class="send-button">Send</button>
+      </div>
     </div>
 
     <!-- Footer section with navigation links -->
@@ -132,7 +98,9 @@
       <div class="container">
         <ul class="list-unstyled mb-0 footer-links">
           <li><a class="text-white" href="{{ url_for('home') }}">Home</a></li>
-          <li><a class="text-white" href="{{ url_for('login') }}">Login</a></li>
+          <li>
+            <a class="text-white" href="{{ url_for('login') }}">Login</a>
+          </li>
           <li>
             <a class="text-white" href="{{ url_for('search') }}">Search</a>
           </li>
@@ -144,69 +112,62 @@
       </div>
     </footer>
 
-
     <!-- Bootstrap Bundle with Popper -->
     <script
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-fQy2aQjl8AdSMz5oP50nFpxFUVGJAhZ+Y94m4TH0N5enP+KqW3LRhD4H9HQj0EzY"
       crossorigin="anonymous"
     ></script>
-  </body>
 
-    <!-- Bootstrap Bundle with Popper for JavaScript functionality -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-fQy2aQjl8AdSMz5oP50nFpxFUVGJAhZ+Y94m4TH0N5enP+KqW3LRhD4H9HQj0EzY" crossorigin="anonymous"></script>
-    
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Elements for the chatbot feature
-            const chatbotButton = document.getElementById("chatbot-button");
-            const chatbotModal = document.getElementById("chatbot-modal");
-            const closeButton = document.getElementById("close-chatbot");
-            const sendMessageButton = document.getElementById("send-message");
-            const userInput = document.getElementById("user-input");
-            const chatlog = document.getElementById("chatlog");
-            
-            // Show chatbot modal when the button is clicked
-            chatbotButton.addEventListener("click", function() {
-                chatbotModal.style.display = "block";
-            });
-            
-            // Hide chatbot modal when the close button is clicked
-            closeButton.addEventListener("click", function() {
-                chatbotModal.style.display = "none";
-            });
-            
-            // Handle sending messages and displaying responses
-            sendMessageButton.addEventListener("click", async function() {
-                const message = userInput.value.trim(); // Get user input
-                if (message) {
-                    addMessageToChatlog("user", message); // Display user message
-                    userInput.value = ""; // Clear input field
-                    
-                    // Send user message to server and get chatbot response
-                    const response = await fetch("/chat", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify({ message: message })
-                    });
-                    const data = await response.json();
-                    addMessageToChatlog("bot", data.response); // Display chatbot response
-                }
-            });
-            
-            // Function to add messages to the chatlog
-            function addMessageToChatlog(role, message) {
-                const messageElement = document.createElement("div");
-                messageElement.classList.add("message", role); // Add appropriate class for styling
-                messageElement.textContent = message; // Set message text
-                chatlog.appendChild(messageElement); // Append message to chatlog
-                chatlog.scrollTop = chatlog.scrollHeight; // Auto-scroll to bottom
-            }
+      document.addEventListener("DOMContentLoaded", function () {
+        // Elements for the chatbot feature
+        const chatbotButton = document.getElementById("chatbot-button");
+        const chatbotModal = document.getElementById("chatbot-modal");
+        const closeButton = document.getElementById("close-chatbot");
+        const sendMessageButton = document.getElementById("send-message");
+        const userInput = document.getElementById("user-input");
+        const chatlog = document.getElementById("chatlog");
+
+        // Show chatbot modal when the button is clicked
+        chatbotButton.addEventListener("click", function () {
+          chatbotModal.style.display = "block";
         });
+
+        // Hide chatbot modal when the close button is clicked
+        closeButton.addEventListener("click", function () {
+          chatbotModal.style.display = "none";
+        });
+
+        // Handle sending messages and displaying responses
+        sendMessageButton.addEventListener("click", async function () {
+          const message = userInput.value.trim(); // Get user input
+          if (message) {
+            addMessageToChatlog("user", message); // Display user message
+            userInput.value = ""; // Clear input field
+
+            // Send user message to server and get chatbot response
+            const response = await fetch("/chat", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ message: message }),
+            });
+            const data = await response.json();
+            addMessageToChatlog("bot", data.response); // Display chatbot response
+          }
+        });
+
+        // Function to add messages to the chatlog
+        function addMessageToChatlog(role, message) {
+          const messageElement = document.createElement("div");
+          messageElement.classList.add("message", role); // Add appropriate class for styling
+          messageElement.textContent = message; // Set message text
+          chatlog.appendChild(messageElement); // Append message to chatlog
+          chatlog.scrollTop = chatlog.scrollHeight; // Auto-scroll to bottom
+        }
+      });
     </script>
-</body>
-
-
+  </body>
 </html>

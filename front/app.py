@@ -5,11 +5,11 @@ from flask_login import LoginManager, current_user, login_user, logout_user, log
 from .forms import RegistrationForm, LoginForm
 from .models import User
 from .db import db
-from backend.api import sys
-from backend.api import get_articles 
+# from backend.api import sys
+from backend.api import get_articles, retrieve_all, format_results, gpt_output
 # Add the backend directory to the system path
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'backend')))
-from api import retrieve_all, format_results, gpt_output
+# sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'backend')))
+# from api import retrieve_all, format_results, gpt_output, get_articles
 
 app = Flask(__name__, static_folder='styles')
 app.config['SECRET_KEY'] = os.urandom(24)
