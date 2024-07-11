@@ -1,8 +1,8 @@
 /* General styles */
 body {
-  background-color: #f5f5f5;
-  font-family: Arial, sans-serif;
-  color: #333;
+  background-color: #f5f5f5; /* Light gray background for the entire page */
+  font-family: Arial, sans-serif; /* Font family for the page text */
+  color: #333; /* Dark gray text color */
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -15,58 +15,62 @@ main {
 
 /* Search Container */
 .search-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 80vh; /* Full viewport height minus some padding */
-  text-align: center;
+  display: flex; /* Use flexbox for layout */
+  flex-direction: column; /* Stack children vertically */
+  justify-content: center; /* Center children vertically */
+  align-items: center; /* Center children horizontally */
+  height: 80vh; /* Height set to 80% of the viewport height */
+  text-align: center; /* Center text alignment */
 }
 
 /* Heading */
 .search-container h1 {
-  font-size: 2.5rem;
-  font-weight: bold;
-  color: #334195;
-  margin-bottom: 2rem;
+  font-size: 2.5rem; /* Large font size for the heading */
+  font-weight: bold; /* Bold font weight */
+  color: #334195; /* Custom blue color for the heading */
+  margin-bottom: 2rem; /* Space below the heading */
 }
 
 /* Search Form */
 .search-form {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%; /* Ensure the form takes the full width */
+  display: flex; /* Use flexbox for layout */
+  flex-direction: column; /* Stack children vertically */
+  align-items: center; /* Center children horizontally */
+  width: 100%; /* Full width of the container */
 }
 
+/* Search Input */
 .search-input {
-  width: 80%; /* Set the width to 80% of the viewport */
-  max-width: 1200px; /* Set a larger max width */
-  padding: 1rem;
-  border: 2px solid #ddd;
-  border-radius: 5px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  font-size: 1rem;
-  transition: box-shadow 0.3s ease-in-out;
-  margin-bottom: 1rem;
+  width: 80%; /* Set width to 80% of the viewport width */
+  max-width: 1200px; /* Max width to ensure input doesn’t get too wide */
+  padding: 1rem; /* Padding inside the input field */
+  border: 2px solid #ddd; /* Light gray border color */
+  border-radius: 5px; /* Rounded corners */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+  font-size: 1rem; /* Font size inside the input field */
+  transition: box-shadow 0.3s ease-in-out; /* Smooth transition for box-shadow */
+  margin-bottom: 1rem; /* Space below the input field */
 }
 
+/* Focus state for the search input */
 .search-input:focus {
-  outline: none;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  outline: none; /* Remove default outline */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Darker shadow on focus for better visibility */
 }
 
+/* Search Button */
 .search-button {
-  background-color: #334195;
-  color: #ffffff;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 20px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease-in-out;
+  background-color: #334195; /* Custom blue color for the button */
+  color: #ffffff; /* White text color */
+  padding: 0.75rem 1.5rem; /* Padding around the button text */
+  border: none; /* Remove default border */
+  border-radius: 20px; /* Rounded corners */
+  font-size: 1rem; /* Font size of the button text */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: background-color 0.3s ease-in-out; /* Smooth transition for background color */
 }
 
+/* Hover state for the search button */
 .search-button:hover {
-  background-color: #020887;
+  background-color: #020887; /* Darker shade of blue on hover */
 }

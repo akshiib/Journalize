@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block head %}
+    <!-- Link to the stylesheet specific to the search results page -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='search_results.css') }}">
+{% endblock %}
+
+{% block content %}
+    <!-- Section for displaying search results -->
+    <section class="results">
+        <!-- Container for navigation buttons -->
+        <div class="button-container">
+            <!-- Link to perform a new search -->
+            <a href="{{ url_for('search') }}" class="btn">New Search</a>
+            <!-- Placeholder link for search history -->
+            <a href="#" class="btn">Search History</a>
+        </div>
+        
+        <!-- Heading displaying the search query -->
+        <h1>Search Results for "{{ query }}"</h1>
+        
+        <!-- Container for displaying individual search results -->
+        <div class="result-list">
+            {% for result in results %}
+                <!-- Container for each search result item -->
+                <div class="result-item">
+                    <!-- Title of the result with a link to the full content -->
+                    <h2><a href="{{ result['url'] }}" target="_blank">{{ result['title'] }}</a></h2>
+                    
+                    <!-- Display the source of the result -->
+                    <p><strong>Source:</strong> {{ result['source'] }}</p>
+                    
+                    <!-- Display a summary of the result -->
+                    <p><strong>Summary:</strong> {{ result['summary'] }}</p>
+                    
+                    <!-- Display the main content of the result -->
+                    <p><strong>Content:</strong> {{ result['content'] }}</p>
+                    
+                    <!-- Display topics associated with the result -->
+                    <p><strong>Topics:</strong></p>
+                    <ul>
+                        {% for topic in result['topics'] %}
+                            <!-- List each topic -->
+                            <li>{{ topic }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+    </section>
+{% endblock %}

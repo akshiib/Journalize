@@ -6,6 +6,7 @@ import json
 from dotenv import load_dotenv
 from pymongo import MongoClient, errors
 from pymongo.server_api import ServerApi
+import textrazor
 
 # Load environment variables from .env file
 load_dotenv()
@@ -13,6 +14,7 @@ load_dotenv()
 # Set up OpenAI API key from environment variable
 openai.api_key = os.getenv('OPENAI_API_KEY')
 ieee_api_key = os.getenv('IEEE_API_KEY')
+textrazor.api_key = os.getenv('TEXTRAZOR_API_KEY')
 
 # Set up MongoDB connection
 mongodb_uri = os.getenv('MONGODB_URI')
@@ -20,10 +22,31 @@ client = MongoClient(mongodb_uri, server_api=ServerApi('1'))
 db = client["research_database"]
 collection = db["articles"]
 
+def user_input():
+    user_inp = input("Enter your research question")
+    keywords = ""
+    client = textrazor.TextRazor(extractors=["entities"])
+    response = client.analyze(user_inp)
+    
+    for entity in response.entities():
+        keywords+=f"{(entity.english_id)} "
+    
+    words = keywords.split()
+    seen = set()
+    for word in words:
+        word_l = word.lower()
+        seen.add(word_l)
+    
+    # Join the unique words with commas
+    result = '%20'.join(seen)
+    return result
+
+KEYWORDS = ""
+
 # Function to retrieve articles from Cornell Arxiv
-def retrieve_cornell(max_results=50):
+def retrieve_cornell(max_results=2):
     # Construct the URL for querying Arxiv
-    url_cornell = f"http://export.arxiv.org/api/query?search_query=all:molecule&max_results={max_results}"
+    url_cornell = f"http://export.arxiv.org/api/query?search_query=all:{KEYWORDS}&max_results={max_results}"
     response_cornell = requests.get(url_cornell)
     
     # Check if the request was successful
@@ -42,13 +65,14 @@ def retrieve_cornell(max_results=50):
                 "title": entry.get('title', 'No title available'),
                 "content": entry.get('summary', 'No summary available')
             }
+            print(article_data)
             process_article(article_data)
 
 # Function to retrieve articles from Europe PMC
 def retrieve_euro(page_size=50):
     url_euro = "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
     params = {
-        "query": "molecule inhibitor dna",
+        "query": KEYWORDS,
         "format": "json",
         "pageSize": page_size
     }
@@ -83,7 +107,7 @@ def retrieve_euro(page_size=50):
             process_article(article_data)
 
 # Function to retrieve articles from IEEE Xplore
-def retrieve_ieee(query, max_records=50):
+def retrieve_ieee(max_records=50):
     url = "http://ieeexploreapi.ieee.org/api/v1/search/articles"
     params = {
         "apikey": ieee_api_key,
@@ -92,7 +116,7 @@ def retrieve_ieee(query, max_records=50):
         "start_record": 1,
         "sort_order": "asc",
         "sort_field": "article_number",
-        "querytext": query
+        "querytext": KEYWORDS
     }
     
     response = requests.get(url, params=params)
@@ -180,8 +204,79 @@ def get_articles():
         print(f"Error retrieving articles from MongoDB: {e}")
         return []
 
+# Define a function to retrieve articles based on given keywords
+def retrieve_all(keywords):
+    global KEYWORDS  # Make the KEYWORDS variable global to be accessible outside this function
+    KEYWORDS = keywords 
+
+    # Initialize an empty list to store articles
+    articles = []
+
+    # Function to collect articles from different sources
+    def collect_articles(func, *args, **kwargs):
+        nonlocal articles  # Access the 'articles' variable defined in the outer function
+        func(*args, **kwargs)  # Call the provided function with arguments and keyword arguments
+        # Ensure the 'process_article' function collects results into the 'articles' list
+        # The 'process_article' function should be defined elsewhere in your code to append results
+
+    # Collect articles from different sources with specified parameters
+    collect_articles(retrieve_cornell, max_results=2)  # Retrieve 2 articles from Cornell
+    collect_articles(retrieve_euro, page_size=2)      # Retrieve 2 articles from Euro
+    collect_articles(retrieve_ieee, max_records=2)    # Retrieve 2 articles from IEEE
+
+    return articles  # Return the list of collected articles
+
+# Define a function to format raw article results
+def format_results(raw_results):
+    formatted_results = []  # Initialize an empty list to store formatted results
+
+    # Loop through each raw result
+    for result in raw_results:
+        formatted_result = {
+            'title': result.get('title', 'No title available'),  # Get the title or default if not present
+            'source': result.get('source', 'Unknown source'),    # Get the source or default if not present
+            'url': result.get('url', '#'),                       # Get the URL or default if not present
+            'summary': result.get('summary', 'No summary available'),  # Get the summary or default if not present
+            'content': result.get('content', 'No content available'),  # Get the content or default if not present
+            'topics': []  # Initialize an empty list for topics
+        }
+
+        # Get topics from the result, default to an empty dictionary if not present
+        topics = result.get('topics', {})
+        for i in range(1, 3):  # Iterate to get up to two topics
+            topic_key = f'topic_{i}'  # Construct the topic key (e.g., 'topic_1', 'topic_2')
+            if topic_key in topics:  # Check if the topic exists in the result
+                formatted_result['topics'].append(topics[topic_key])  # Add the topic to the list
+
+        formatted_results.append(formatted_result)  # Add the formatted result to the list
+
+    return formatted_results  # Return the list of formatted results
+
+
+def gpt_output(user_input):
+    client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
+    completion = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {"role": "system", "content": """You are a researcher explaining research papers based on questions asked to you"""},
+            {"role": "user", "content": f"""Answer the following question in a few sentences: {user_input}
+            """}
+        ]
+    )
+    output = (completion.choices[0].message.content)
+    return output
+
+def chat():
+    print("Welcome to the OpenAI Chatbot. Type 'quit' to exit.")
+    while True:
+        user_input = input("You: ")
+        if user_input.lower() == "quit":
+            break
+        response = gpt_output(user_input)
+        print(f"Chatbot: {response}")
+
+
 # Main script to retrieve articles from different sources
-if __name__ == "__main__":
-    retrieve_cornell(max_results=1)
-    retrieve_euro(page_size=1)
-    retrieve_ieee("molecule inhibitor dna", max_records=1)
+# if __name__ == "__main__":
+#     #retrieve_all()
+
