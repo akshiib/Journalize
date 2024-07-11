@@ -61,6 +61,12 @@
                 <a class="nav-link" href="{{ url_for('login') }}">Login</a>
               </li>
               {% endif %}
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('search') }}">Search</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{{ url_for('database') }}">History</a>
+              </li>
             </ul>
           </div>
         </div>
@@ -98,16 +104,21 @@
       <div class="container">
         <ul class="list-unstyled mb-0 footer-links">
           <li><a class="text-white" href="{{ url_for('home') }}">Home</a></li>
+          {% if current_user.is_authenticated %}
+          <li>
+            <a class="text-white" href="{{ url_for('logout') }}">Logout</a>
+          </li>
+          {% else %}
           <li>
             <a class="text-white" href="{{ url_for('login') }}">Login</a>
           </li>
+          {% endif %}
           <li>
             <a class="text-white" href="{{ url_for('search') }}">Search</a>
           </li>
           <li>
-            <a class="text-white" href="{{ url_for('database') }}">Databases</a>
+            <a class="text-white" href="{{ url_for('database') }}">History</a>
           </li>
-          <li><a class="text-white" href="#">Chat</a></li>
         </ul>
       </div>
     </footer>

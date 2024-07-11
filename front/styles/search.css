@@ -63,7 +63,7 @@ main {
   background-color: #334195; /* Custom blue color for the button */
   color: #ffffff; /* White text color */
   padding: 0.75rem 1.5rem; /* Padding around the button text */
-  border: none; /* Remove default border */
+  border: 1px solid #eeee; /* Remove default border */
   border-radius: 20px; /* Rounded corners */
   font-size: 1rem; /* Font size of the button text */
   cursor: pointer; /* Pointer cursor on hover */
@@ -72,5 +72,8 @@ main {
 
 /* Hover state for the search button */
 .search-button:hover {
-  background-color: #020887; /* Darker shade of blue on hover */
+  color: #334195;
+  background-color: white;
+  border-color: #334195;
+  border: 1px solid #334195;
 }
