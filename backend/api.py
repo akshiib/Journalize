@@ -41,14 +41,13 @@ def user_input():
     result = '%20'.join(seen)
     return result
 
-KEYWORDS = ""
 
 # Function to retrieve articles from Cornell Arxiv
-def retrieve_cornell(max_results=2):
+def retrieve_cornell(max_results, keywords):
     # Construct the URL for querying Arxiv
-    url_cornell = f"http://export.arxiv.org/api/query?search_query=all:{KEYWORDS}&max_results={max_results}"
+    url_cornell = f"http://export.arxiv.org/api/query?search_query=all:{keywords}&max_results={max_results}"
     response_cornell = requests.get(url_cornell)
-    
+
     # Check if the request was successful
     if response_cornell.status_code == 200:
         feed = feedparser.parse(response_cornell.content)
@@ -65,19 +64,18 @@ def retrieve_cornell(max_results=2):
                 "title": entry.get('title', 'No title available'),
                 "content": entry.get('summary', 'No summary available')
             }
-            print(article_data)
             process_article(article_data)
 
 # Function to retrieve articles from Europe PMC
-def retrieve_euro(page_size=50):
+def retrieve_euro(page_size, keywords):
     url_euro = "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
     params = {
-        "query": KEYWORDS,
+        "query": keywords,
         "format": "json",
         "pageSize": page_size
     }
     response_euro = requests.get(url_euro, params=params)
-    
+
     # Check if the request was successful
     if response_euro.status_code == 200:
         data = response_euro.json()
@@ -107,7 +105,7 @@ def retrieve_euro(page_size=50):
             process_article(article_data)
 
 # Function to retrieve articles from IEEE Xplore
-def retrieve_ieee(max_records=50):
+def retrieve_ieee(max_records, keywords):
     url = "http://ieeexploreapi.ieee.org/api/v1/search/articles"
     params = {
         "apikey": ieee_api_key,
@@ -116,9 +114,9 @@ def retrieve_ieee(max_records=50):
         "start_record": 1,
         "sort_order": "asc",
         "sort_field": "article_number",
-        "querytext": KEYWORDS
+        "querytext": keywords
     }
-    
+
     response = requests.get(url, params=params)
     # Check if the request was successful
     if response.status_code == 200:
@@ -220,9 +218,9 @@ def retrieve_all(keywords):
         # The 'process_article' function should be defined elsewhere in your code to append results
 
     # Collect articles from different sources with specified parameters
-    collect_articles(retrieve_cornell, max_results=2)  # Retrieve 2 articles from Cornell
-    collect_articles(retrieve_euro, page_size=2)      # Retrieve 2 articles from Euro
-    collect_articles(retrieve_ieee, max_records=2)    # Retrieve 2 articles from IEEE
+    collect_articles(retrieve_cornell, max_results=2, keywords=KEYWORDS)  # Retrieve 2 articles from Cornell
+    collect_articles(retrieve_euro, page_size=2, keywords=KEYWORDS)      # Retrieve 2 articles from Euro
+    collect_articles(retrieve_ieee, max_records=2, keywords=KEYWORDS)    # Retrieve 2 articles from IEEE
 
     return articles  # Return the list of collected articles
 
@@ -253,20 +251,6 @@ def format_results(raw_results):
     return formatted_results  # Return the list of formatted results
 
 
-# def gpt_output(user_input):
-#     client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
-#     completion = client.chat.completions.create(
-#         model="gpt-4o",
-#         messages=[
-#             {"role": "system", "content": """You are a researcher explaining research papers based on questions asked to you"""},
-#             {"role": "user", "content": f"""Answer the following question in a few sentences: {user_input}
-#             """}
-#         ]
-#     )
-#     output = (completion.choices[0].message.content)
-#     return output
-
-
 def gpt_output(user_input):
     try:
         response = openai.ChatCompletion.create(
@@ -294,6 +278,6 @@ def chat():
 
 
 # Main script to retrieve articles from different sources
-# if __name__ == "__main__":
-#     #retrieve_all()
-
+if __name__ == "__main__":
+    keywords = user_input()
+    retrieve_all(keywords)
