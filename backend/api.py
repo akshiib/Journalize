@@ -4,7 +4,7 @@ import feedparser
 import openai
 import json
 from dotenv import load_dotenv
-from pymongo.mongo_client import MongoClient
+from pymongo import MongoClient, errors
 from pymongo.server_api import ServerApi
 
 # Load environment variables from .env file
@@ -170,6 +170,15 @@ def insert_to_mongodb(article_data):
         print(f"Article '{article_data['title']}' inserted successfully!")
     except Exception as e:
         print(f"Error inserting article to MongoDB: {e}")
+
+# Function to get articles from inside MongoDB
+def get_articles():
+    try: 
+        articles = list(collection.find())
+        return articles
+    except errors.PyMongoError as e:
+        print(f"Error retrieving articles from MongoDB: {e}")
+        return []
 
 # Main script to retrieve articles from different sources
 if __name__ == "__main__":
