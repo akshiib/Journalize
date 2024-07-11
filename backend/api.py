@@ -253,18 +253,35 @@ def format_results(raw_results):
     return formatted_results  # Return the list of formatted results
 
 
+# def gpt_output(user_input):
+#     client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+#     completion = client.chat.completions.create(
+#         model="gpt-4o",
+#         messages=[
+#             {"role": "system", "content": """You are a researcher explaining research papers based on questions asked to you"""},
+#             {"role": "user", "content": f"""Answer the following question in a few sentences: {user_input}
+#             """}
+#         ]
+#     )
+#     output = (completion.choices[0].message.content)
+#     return output
+
+
 def gpt_output(user_input):
-    client = OpenAI(api_key=os.environ["OPENAI_API_KEY"])
-    completion = client.chat.completions.create(
-        model="gpt-4o",
-        messages=[
+    try:
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[
             {"role": "system", "content": """You are a researcher explaining research papers based on questions asked to you"""},
             {"role": "user", "content": f"""Answer the following question in a few sentences: {user_input}
             """}
-        ]
-    )
-    output = (completion.choices[0].message.content)
-    return output
+        ],
+            max_tokens=100
+        )
+        output = (completion.choices[0].message.content)
+        return output
+    except Exception as e:
+        return {"error": "ChatBot failed"}
 
 def chat():
     print("Welcome to the OpenAI Chatbot. Type 'quit' to exit.")
