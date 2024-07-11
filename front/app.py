@@ -69,6 +69,7 @@ def logout():
     logout_user()
     return redirect(url_for('home'))
 
+# Route for search functionality
 @app.route('/search', methods=['GET', 'POST'])
 def search():
     if request.method == 'POST':

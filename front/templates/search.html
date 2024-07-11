@@ -1,9 +1,11 @@
 {% extends "base.html" %}
 
+
 {% block head %}
     <!-- Link to the search page specific CSS file -->
     <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
 {% endblock %}
+
 
 {% block content %}
     <!-- Container for the search functionality -->
@@ -11,7 +13,7 @@
         <!-- Main heading for the search page -->
         <h1><strong>Search for Research Papers</strong></h1>
         <!-- Search form -->
-        <form class="search-form" action="{{ url_for('search') }}" method="GET">
+        <form class="search-form" action="{{ url_for('search') }}" method="POST">
             <!-- Input field for entering search queries -->
             <input type="text" name="query" class="search-input" placeholder="Enter your research question or keywords">
             <!-- Submit button for the search form -->
