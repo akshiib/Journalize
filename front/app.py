@@ -2,11 +2,12 @@ import sys
 import os
 from flask import Flask, render_template, flash, redirect, url_for, request, jsonify
 from flask_login import LoginManager, current_user, login_user, logout_user, login_required
-from .forms import RegistrationForm, LoginForm
-from .models import User
-from .db import db
 # from backend.api import sys
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from backend.api import get_articles, retrieve_all, format_results, gpt_output
+from front.forms import RegistrationForm, LoginForm
+from front.models import User
+from front.db import db
 # Add the backend directory to the system path
 # sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'backend')))
 # from api import retrieve_all, format_results, gpt_output, get_articles
