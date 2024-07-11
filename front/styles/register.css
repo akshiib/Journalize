@@ -1,3 +1,16 @@
+main {
+  display: flex;
+  justify-content: center;
+  padding: 82px;
+}
+
+.col-md-8 {
+  flex: auto;
+  display: flex;
+  justify-content: center;
+  width: 700px;
+}
+
 .register-container {
   justify-content: center;
   align-items: center;
@@ -23,16 +36,16 @@
 
 .btn {
   border-radius: 20px;
-  background-color: #7b3d9f;
+  background-color: #334195;
   color: white;
   width: 200px;
   height: 50px;
 }
 
 .btn:hover {
-  color: #7b3d9f;
+  color: #334195;
   background-color: white;
-  border-color: #7b3d9f;
+  border-color: #334195;
 }
 
 .invalid-feedback {

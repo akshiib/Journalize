@@ -1,0 +1,47 @@
+{% extends "base.html" %} {% block head %}
+<link
+  rel="stylesheet"
+  href="{{ url_for('static', filename='database.css') }}"
+/>
+{% endblock %} {% block content %}
+<div class="database-container">
+  <h1><strong>History</strong></h1>
+  <table>
+    <thead>
+      <tr>
+        <th class="id">
+          <h5><strong>Search ID</strong></h5>
+        </th>
+        <th>
+          <h5><strong>Article Data</strong></h5>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for index, article in enumerate(articles, start=1) %}
+      <tr>
+        <td class="index">{{ index }}</td>
+        <td>
+          <p>
+            <strong>Title: </strong>
+            <a href="{{ article['url'] }}" target="_blank"
+              >{{ article['title'] }}</a
+            >
+          </p>
+          <p><strong>Source: </strong>{{ article['source'] }}</p>
+          <p><strong>Summary: </strong>{{ article['summary'] }}</p>
+          <p><strong>Content: </strong>{{ article['content'] }}</p>
+          <p><strong>Topics: </strong></p>
+
+          <ul>
+            {% for topic in article['topics'] %}
+            <li>{{ topic }}</li>
+            {% endfor %}
+          </ul>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -1,16 +1,17 @@
-from flask import Flask, render_template, flash, redirect, url_for, request
-from flask_sqlalchemy import SQLAlchemy
-from flask_login import LoginManager, current_user, login_user, logout_user, login_required
-from werkzeug.security import generate_password_hash, check_password_hash
-from forms import RegistrationForm, LoginForm
-from models import User
-from db import db
+import sys
 import os
+from flask import Flask, render_template, flash, redirect, url_for, request
+from flask_login import LoginManager, current_user, login_user, logout_user, login_required
+from .forms import RegistrationForm, LoginForm
+from .models import User
+from .db import db
+from backend.api import get_articles 
 
 app = Flask(__name__, static_folder='styles')
 app.config['SECRET_KEY'] = os.urandom(24)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 
+# Initialize SQLAlchemy
 db.init_app(app)
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
@@ -20,13 +21,13 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 @app.route('/')
-def hello_world():
+def home():
     return render_template('home.html')
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('hello_world'))
+        return redirect(url_for('search'))
     
     form = LoginForm()
     if form.validate_on_submit():
@@ -34,7 +35,7 @@ def login():
         if user and user.check_password(form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
-            return redirect(next_page or url_for('hello_world'))
+            return redirect(next_page or url_for('search'))
         else:
             flash('Login Unsuccessful. Please check username and password', 'danger')
     return render_template('login.html', title='Login', form=form)
@@ -61,7 +62,7 @@ def register():
 @login_required
 def logout():
     logout_user()
-    return redirect(url_for('hello_world'))
+    return redirect(url_for('home'))
 
 @app.route('/search')
 def search():
@@ -73,5 +74,11 @@ def search_results():
     # Add search logic here
     return render_template('search_results.html', query=query)
 
+@app.route('/database')
+def database():
+    articles = get_articles()
+    return render_template('database.html', articles=articles, enumerate=enumerate)
+
 if __name__ == '__main__':
     app.run()
+
