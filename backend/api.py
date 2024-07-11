@@ -41,11 +41,8 @@ def user_input():
     result = '%20'.join(seen)
     return result
 
-KEYWORDS = ""
-
-
-def retrieve_cornell(max_results=2):
-    url_cornell = f"http://export.arxiv.org/api/query?search_query=all:{KEYWORDS}&max_results={max_results}"
+def retrieve_cornell(max_results, keywords):
+    url_cornell = f"http://export.arxiv.org/api/query?search_query=all:{keywords}&max_results={max_results}"
     response_cornell = requests.get(url_cornell)
    
     if response_cornell.status_code == 200:
@@ -68,10 +65,10 @@ def retrieve_cornell(max_results=2):
     return []
 
 
-def retrieve_euro(page_size=50):
+def retrieve_euro(page_size, keywords):
     url_euro = "https://www.ebi.ac.uk/europepmc/webservices/rest/search"
     params = {
-        "query": KEYWORDS,
+        "query": keywords,
         "format": "json",
         "pageSize": page_size
     }
@@ -106,7 +103,7 @@ def retrieve_euro(page_size=50):
     return []
 
 
-def retrieve_ieee(max_records=50):
+def retrieve_ieee(max_records, keywords):
     url = "http://ieeexploreapi.ieee.org/api/v1/search/articles"
     params = {
         "apikey": ieee_api_key,
@@ -115,7 +112,7 @@ def retrieve_ieee(max_records=50):
         "start_record": 1,
         "sort_order": "asc",
         "sort_field": "article_number",
-        "querytext": KEYWORDS
+        "querytext": keywords
     }
    
     response = requests.get(url, params=params)
@@ -225,9 +222,9 @@ def retrieve_all(keywords):
             articles.extend(new_articles)
 
 
-    collect_articles(retrieve_cornell, max_results=2)
-    collect_articles(retrieve_euro, page_size=2)
-    collect_articles(retrieve_ieee, max_records=2)
+    collect_articles(retrieve_cornell, max_results=2, keywords=KEYWORDS)
+    collect_articles(retrieve_euro, page_size=2, keywords=KEYWORDS)
+    collect_articles(retrieve_ieee, max_records=2, keywords=KEYWORDS)
 
 
     processed_articles = [process_article(article) for article in articles]
