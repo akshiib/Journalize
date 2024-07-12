@@ -142,18 +142,14 @@ def retrieve_ieee(max_records, keywords):
     return []
 
 
-# Function to process and store the article data
 def process_article(article_data):
     content = article_data.get('content', '')
     if content == 'No summary available' or content == 'No abstract available':
         summary = "As there's no available content provided, a summary cannot be created."
-        topics = {
-            "topic_1": "The main topics in the provided text are: lack of available content",
-            "topic_2": "and inability to create a summary."
-        }
+        topics = ["Lack of available content", "Inability to create a summary"]
     else:
         summary = summarize_with_openai(content)
-        topics = extract_topics_with_openai(summary)
+        topics = extract_topics_with_openai(summary).get("topics", [])
 
     article_data.update({"summary": summary, "topics": topics})
     insert_to_mongodb(article_data)
@@ -181,17 +177,20 @@ def summarize_with_openai(content):
 def extract_topics_with_openai(text):
     try:
         response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": f"Extract the main topics from the following text: {text}"}
-        ],
-        max_tokens=100)
-        topics = response.choices[0].message.content.strip().split(', ')
-        return {f"topic_{i+1}": topic for i, topic in enumerate(topics)}
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "user", "content": f"List the main topics of the story, each on its own line without any other text, and no bullet points. Be brief and to the point': {text}"}
+            ],
+            max_tokens=100
+        )
+        topics_text = response.choices[0].message.content.strip()
+        # Split by commas or newlines and strip whitespace
+        topics = [topic.strip() for topic in topics_text.split('\n') if topic.strip()]
+        topics = [topic for topic in topics if not topic.startswith("The main topics of the text are:")]
+        return {"topics": topics}
     except Exception as e:
-        return {"error": "Topic extraction failed"}
-
+        return {"topics": ["Topic extraction failed"]}
 
 # Function to insert article data into MongoDB
 def insert_to_mongodb(article_data):
@@ -243,7 +242,6 @@ def retrieve_all(keywords):
 def format_results(raw_results):
     formatted_results = []  # Initialize an empty list to store formatted results
 
-
     # Loop through each raw result
     for result in raw_results:
         formatted_result = {
@@ -252,17 +250,10 @@ def format_results(raw_results):
             'url': result.get('url', '#'),                       # Get the URL or default if not present
             'summary': result.get('summary', 'No summary available'),  # Get the summary or default if not present
             'content': result.get('content', 'No content available'),  # Get the content or default if not present
-            'topics': []  # Initialize an empty list for topics
+            'topics': result.get('topics', [])[:2]  # Get the top 2 topics or default if not present
         }
 
-
-        # Get topics from the result, default to an empty dictionary if not present
-        topics = result.get('topics', {})
-        formatted_result['topics'] = topics
-
-
         formatted_results.append(formatted_result)  # Append the formatted result to the list
-
 
     return formatted_results  # Return the list of formatted results
 
