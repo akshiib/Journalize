@@ -10,9 +10,16 @@ import textrazor
 
 # Load environment variables from .env file
 load_dotenv()
+api_key = os.getenv('OPENAI_API_KEY')
+print(f"Loaded API Key: {api_key}")  # Debug print
+
+if not api_key:
+    raise ValueError("API key not found. Please set the OPENAI_API_KEY environment variable.")
+
+# Set the API key for the OpenAI client
+openai.api_key = api_key
 
 # Set up OpenAI API key from environment variable
-openai.api_key = os.getenv('OPENAI_API_KEY')
 ieee_api_key = os.getenv('IEEE_API_KEY')
 textrazor.api_key = os.getenv('TEXTRAZOR_API_KEY')
 
@@ -27,16 +34,16 @@ def user_input():
     keywords = ""
     client = textrazor.TextRazor(extractors=["entities"])
     response = client.analyze(user_inp)
-    
+
     for entity in response.entities():
         keywords+=f"{(entity.english_id)} "
-    
+
     words = keywords.split()
     seen = set()
     for word in words:
         word_l = word.lower()
         seen.add(word_l)
-    
+
     # Join the unique words with commas
     result = '%20'.join(seen)
     return result
@@ -44,13 +51,13 @@ def user_input():
 def retrieve_cornell(max_results, keywords):
     url_cornell = f"http://export.arxiv.org/api/query?search_query=all:{keywords}&max_results={max_results}"
     response_cornell = requests.get(url_cornell)
-   
+
     if response_cornell.status_code == 200:
         feed = feedparser.parse(response_cornell.content)
-       
+
         if not feed.entries:
             return []
-       
+
         articles = []
         for entry in feed.entries:
             article_data = {
@@ -60,7 +67,7 @@ def retrieve_cornell(max_results, keywords):
                 "content": entry.get('summary', 'No summary available')
             }
             articles.append(article_data)
-       
+
         return articles
     return []
 
@@ -73,14 +80,14 @@ def retrieve_euro(page_size, keywords):
         "pageSize": page_size
     }
     response_euro = requests.get(url_euro, params=params)
-   
+
     if response_euro.status_code == 200:
         data = response_euro.json()
         articles = data.get('resultList', {}).get('result', [])
-       
+
         if not articles:
             return []
-       
+
         results = []
         for article in articles:
             content = article.get('abstractText', '')
@@ -90,7 +97,7 @@ def retrieve_euro(page_size, keywords):
                     f"Authors: {article.get('authorString', 'No authors available')}. "
                     f"Journal: {article.get('journalTitle', 'No journal available')} ({article.get('pubYear', 'No year available')})."
                 )
-           
+
             article_data = {
                 "source": "Europe PMC",
                 "doi": article.get('doi', 'NAN'),
@@ -98,7 +105,7 @@ def retrieve_euro(page_size, keywords):
                 "content": content
             }
             results.append(article_data)
-       
+
         return results
     return []
 
@@ -114,14 +121,14 @@ def retrieve_ieee(max_records, keywords):
         "sort_field": "article_number",
         "querytext": keywords
     }
-   
+
     response = requests.get(url, params=params)
     if response.status_code == 200:
         articles = response.json().get('articles', [])
-       
+
         if not articles:
             return []
-       
+
         results = []
         for article in articles:
             article_data = {
@@ -130,7 +137,7 @@ def retrieve_ieee(max_records, keywords):
                 "content": article.get('abstract', 'No abstract available')
             }
             results.append(article_data)
-       
+
         return results
     return []
 
@@ -147,7 +154,7 @@ def process_article(article_data):
     else:
         summary = summarize_with_openai(content)
         topics = extract_topics_with_openai(summary)
-   
+
     article_data.update({"summary": summary, "topics": topics})
     insert_to_mongodb(article_data)
     return article_data
@@ -157,16 +164,16 @@ def process_article(article_data):
 def summarize_with_openai(content):
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": f"Please summarize the following content: {content}"}
-            ],
-            max_tokens=150
-        )
-        summary = response.choices[0].message['content'].strip()
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": f"Please summarize the following content: {content}"}
+        ],
+        max_tokens=150)
+        summary = response.choices[0].message.content.strip()
         return summary
     except Exception as e:
+        print(e)
         return "Summarization failed"
 
 
@@ -174,14 +181,13 @@ def summarize_with_openai(content):
 def extract_topics_with_openai(text):
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-4",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": f"Extract the main topics from the following text: {text}"}
-            ],
-            max_tokens=100
-        )
-        topics = response.choices[0].message['content'].strip().split(', ')
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": f"Extract the main topics from the following text: {text}"}
+        ],
+        max_tokens=100)
+        topics = response.choices[0].message.content.strip().split(', ')
         return {f"topic_{i+1}": topic for i, topic in enumerate(topics)}
     except Exception as e:
         return {"error": "Topic extraction failed"}
@@ -263,18 +269,20 @@ def format_results(raw_results):
 def gpt_output(user_input):
     try:
         response = openai.ChatCompletion.create(
-            model="gpt-4",
+            model="gpt-3.5-turbo",
             messages=[
-            {"role": "system", "content": """You are a researcher explaining research papers based on questions asked to you"""},
-            {"role": "user", "content": f"""Answer the following question in a few sentences: {user_input}
-            """}
-        ],
+                {"role": "system", "content": "You are a researcher explaining research papers based on questions asked to you."},
+                {"role": "user", "content": f"Answer the following question in a few sentences: {user_input}"}
+            ],
             max_tokens=100
         )
-        output = (completion.choices[0].message.content)
+        # print(response)  # Debug print
+        output = response.choices[0].message['content']
         return output
     except Exception as e:
+        print(e)
         return {"error": "ChatBot failed"}
+
 
 def chat():
     print("Welcome to the OpenAI Chatbot. Type 'quit' to exit.")
@@ -288,5 +296,4 @@ def chat():
 
 # # Main script to retrieve articles from different sources
 # if __name__ == "__main__":
-#     keywords = user_input()
-#     retrieve_all(keywords)
+#     chat()
